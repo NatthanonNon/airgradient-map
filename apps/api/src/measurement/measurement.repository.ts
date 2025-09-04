@@ -1,8 +1,9 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import DatabaseService from 'src/database/database.service';
 import { MeasurementEntity } from './measurement.entity';
 import { MeasureType } from 'src/utils/measureTypeQuery';
 import { getMeasureValidValueRange } from 'src/utils/measureValueValidation';
+import { AppError, ErrorCode } from 'src/common/errors';
 
 @Injectable()
 class MeasurementRepository {
@@ -102,13 +103,12 @@ class MeasurementRepository {
       );
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException({
-        message: 'MEAS_001: Failed to retrieve latest measurements',
-        operation: 'retrieveLatest',
-        parameters: { offset, limit, measure },
-        error: error.message,
-        code: 'MEAS_001',
-      });
+      throw AppError.databaseError(
+        ErrorCode.MEAS_001,
+        'retrieveLatest',
+        error,
+        { offset, limit, measure },
+      );
     }
   }
 
@@ -178,13 +178,12 @@ class MeasurementRepository {
       );
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException({
-        message: 'MEAS_002: Failed to retrieve latest measurements by area',
-        operation: 'retrieveLatestByArea',
-        parameters: { xMin, yMin, xMax, yMax, measure },
-        error: error.message,
-        code: 'MEAS_002',
-      });
+      throw AppError.databaseError(
+        ErrorCode.MEAS_002,
+        'retrieveLatestByArea',
+        error,
+        { xMin, yMin, xMax, yMax, measure },
+      );
     }
   }
 }
