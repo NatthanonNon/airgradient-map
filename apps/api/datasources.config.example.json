@@ -1,0 +1,183 @@
+{
+  "dataSources": [
+    {
+      "name": "dustboy-thailand",
+      "type": "dustboy",
+      "enabled": true,
+      "cronSchedule": "0 */5 * * * *",
+      "apiConfig": {
+        "baseUrl": "https://api.dustboy.org",
+        "apiKey": "your-dustboy-api-key",
+        "timeout": 30000,
+        "retries": 3,
+        "headers": {
+          "Accept": "application/json",
+          "User-Agent": "AirGradient-Map-API/1.0"
+        }
+      },
+      "mapping": {
+        "locationId": "station_id",
+        "locationName": "station_name",
+        "longitude": "longitude",
+        "latitude": "latitude", 
+        "sensorType": "sensor_type",
+        "pm25": "pm25_value",
+        "pm10": "pm10_value",
+        "atmp": "temperature",
+        "rhum": "humidity",
+        "measuredAt": "timestamp"
+      },
+      "transformation": {
+        "coordinates": "direct",
+        "dateFormat": "iso8601",
+        "valueMultipliers": {
+          "atmp": 1.0,
+          "rhum": 1.0
+        },
+        "filters": {
+          "online": true,
+          "status": "active"
+        }
+      }
+    },
+    {
+      "name": "purpleair-bangkok",
+      "type": "generic",
+      "enabled": true,
+      "cronSchedule": "0 */10 * * * *",
+      "apiConfig": {
+        "baseUrl": "https://api.purpleair.com/v1",
+        "apiKey": "your-purple-air-api-key",
+        "timeout": 25000,
+        "retries": 2,
+        "endpoint": "/sensors",
+        "headers": {
+          "X-API-Key": "your-purple-air-api-key"
+        }
+      },
+      "mapping": {
+        "locationId": "sensor_index",
+        "locationName": "name",
+        "longitude": "longitude",
+        "latitude": "latitude",
+        "sensorType": "model",
+        "pm25": "pm2.5_atm",
+        "pm10": "pm10.0_atm",
+        "atmp": "temperature",
+        "rhum": "humidity",
+        "measuredAt": "last_seen"
+      },
+      "transformation": {
+        "coordinates": "direct",
+        "filters": {
+          "location_type": 0,
+          "private": 0
+        }
+      }
+    },
+    {
+      "name": "openaq-thailand",
+      "type": "generic", 
+      "enabled": true,
+      "cronSchedule": "0 */15 * * * *",
+      "apiConfig": {
+        "baseUrl": "https://api.openaq.org/v2",
+        "timeout": 20000,
+        "retries": 2,
+        "endpoint": "/latest?country=TH&limit=1000",
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "mapping": {
+        "locationId": "location",
+        "locationName": "location", 
+        "longitude": "coordinates.longitude",
+        "latitude": "coordinates.latitude",
+        "sensorType": "entity",
+        "pm25": "measurements.pm25.value",
+        "pm10": "measurements.pm10.value",
+        "o3": "measurements.o3.value", 
+        "no2": "measurements.no2.value",
+        "measuredAt": "measurements.pm25.lastUpdated"
+      },
+      "transformation": {
+        "coordinates": "direct"
+      }
+    },
+    {
+      "name": "airgradient-official",
+      "type": "airgradient",
+      "enabled": true,
+      "cronSchedule": "0 */3 * * * *",
+      "apiConfig": {
+        "baseUrl": "https://api.airgradient.com/public/api/v1",
+        "apiKey": "your-airgradient-token",
+        "timeout": 30000,
+        "retries": 3
+      },
+      "mapping": {
+        "locationId": "sensorId",
+        "locationName": "locationName",
+        "longitude": "longitude", 
+        "latitude": "latitude",
+        "sensorType": "model",
+        "pm25": "pm02",
+        "pm10": "pm10",
+        "atmp": "atmp",
+        "rhum": "rhum",
+        "rco2": "rco2",
+        "measuredAt": "timestamp"
+      },
+      "transformation": {
+        "coordinates": "direct",
+        "filters": {
+          "public": true
+        }
+      }
+    },
+    {
+      "name": "custom-api-example",
+      "type": "generic",
+      "enabled": false,
+      "cronSchedule": "0 */20 * * * *",
+      "apiConfig": {
+        "baseUrl": "https://your-custom-api.com",
+        "apiKey": "your-api-key",
+        "timeout": 15000,
+        "retries": 2,
+        "endpoint": "/air-quality/latest",
+        "healthEndpoint": "/health",
+        "headers": {
+          "Authorization": "Bearer your-token",
+          "Content-Type": "application/json"
+        }
+      },
+      "mapping": {
+        "locationId": "id",
+        "locationName": "site_name",
+        "longitude": "coord.lng",
+        "latitude": "coord.lat",
+        "sensorType": "device_type",
+        "pm25": "data.pm2_5",
+        "pm10": "data.pm10",
+        "atmp": "data.temp_c",
+        "rhum": "data.humidity_pct",
+        "o3": "data.ozone_ppb",
+        "no2": "data.no2_ppb",
+        "measuredAt": "data.recorded_at"
+      },
+      "transformation": {
+        "coordinates": "direct",
+        "valueMultipliers": {
+          "o3": 1.96,
+          "no2": 1.88
+        },
+        "filters": {
+          "status": "online",
+          "data_quality": "valid"
+        }
+      }
+    }
+  ]
+}
